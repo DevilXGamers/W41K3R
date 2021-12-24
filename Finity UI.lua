@@ -1,23 +1,3 @@
---[[
-	 ______ _____ _   _ _____ _________     __
-	|  ____|_   _| \ | |_   _|__   __\ \   / /
-	| |__    | | |  \| | | |    | |   \ \_/ / 
-	|  __|   | | | . ` | | |    | |    \   /  
-	| |     _| |_| |\  |_| |_   | |     | |   
-	|_|    |_____|_| \_|_____|  |_|     |_|   
-	
-	Source:
-		https://d3to-finity.000webhostapp.com/files/source-0.1.2.txt
-	Version:
-	 0.1.5
-	Date: 
-		April 21th, 2020
-	Author: 
-		detourious @ v3rmillion.netf
-					
---]]
-
-
 local finity = {}
 finity.gs = {}
 
@@ -66,12 +46,12 @@ finity.dark_theme = { -- dark
 	category_button_background = Color3.fromRGB(63, 62, 65),
 	category_button_border = Color3.fromRGB(72, 71, 74),
 
-	checkbox_checked = Color3.fromRGB(222, 53, 149),
+	checkbox_checked = Color3.fromRGB(132, 255, 130),
 	checkbox_outer = Color3.fromRGB(84, 81, 86),
 	checkbox_inner = Color3.fromRGB(132, 132, 136),
 
-	slider_color = Color3.fromRGB(222, 53, 149),
-	slider_color_sliding = Color3.fromRGB(222, 53, 149),
+	slider_color = Color3.fromRGB(177, 177, 177),
+	slider_color_sliding = Color3.fromRGB(132, 255, 130),
 	slider_background = Color3.fromRGB(88, 84, 90),
 	slider_text = Color3.fromRGB(177, 177, 177),
 
@@ -141,9 +121,8 @@ function finity.new(isdark, gprojectName, thinProject)
 	local self = finity
 
 	if not finity.gs["RunService"]:IsStudio() and self.gs["CoreGui"]:FindFirstChild("FinityUI") then
-		warn("finity:", "instance already exists in coregui!")
-		
-		return
+
+		self.gs["CoreGui"]:FindFirstChild("FinityUI"):Destroy()
 	end
 
 	local theme = finity.theme
@@ -670,25 +649,6 @@ function finity.new(isdark, gprojectName, thinProject)
 								finity.gs["TweenService"]:Create(cheat.checkboxbutton, TweenInfo.new(0.2), {ImageColor3 = theme.checkbox_inner}):Play()
 							end
 						end)
-						
-						function cheat:SetValue(value)
-						    cheat.value = value
-						    if cheat.value then
-							finity.gs["TweenService"]:Create(cheat.outerbox, TweenInfo.new(0.2), {ImageColor3 = theme.checkbox_checked}):Play()
-											finity.gs["TweenService"]:Create(cheat.checkboxbutton, TweenInfo.new(0.2), {ImageColor3 = theme.checkbox_checked}):Play()
-						    else
-							finity.gs["TweenService"]:Create(cheat.outerbox, TweenInfo.new(0.2), {ImageColor3 = theme.checkbox_outer}):Play()
-											finity.gs["TweenService"]:Create(cheat.checkboxbutton, TweenInfo.new(0.2), {ImageColor3 = theme.checkbox_inner}):Play()
-						    end
-						    if callback then
-							local s, e = pcall(function()
-							    callback(cheat.value)
-							end)
-							if not s then 
-							    warn("error: "..e) 
-							end
-						    end
-                        			end
 
 						cheat.checkboxbutton.Parent = cheat.outerbox
                         cheat.outerbox.Parent = cheat.container
@@ -982,8 +942,11 @@ function finity.new(isdark, gprojectName, thinProject)
 						function cheat:RemoveOption(value)
 							local removed = false
 							for index, option in next, options do
-								table.remove(options, index)
+								if option == value then
+									table.remove(options, index)
 									removed = true
+									break
+								end
 							end
 							
 							if removed then
@@ -994,24 +957,9 @@ function finity.new(isdark, gprojectName, thinProject)
 						end
 						
 						function cheat:AddOption(value)
-							if type(value) == "table" then
-								for i, v in next, value do
-									table.insert(options, v)
-									refreshOptions()
-								end
-							end
-						end
-					
-						function cheat:Refresh(vals)
-							if type(vals) == "table" then
-								table.clear(options)
-								refreshOptions()
-								wait()
-								for index2, add in next, vals do
-									table.insert(options, add)
-									refreshOptions()
-								end
-							end						
+							table.insert(options, value)
+							
+							refreshOptions()
 						end
 						
 						function cheat:SetValue(value)
@@ -1206,9 +1154,9 @@ function finity.new(isdark, gprojectName, thinProject)
 							if callback then
 								local s, e = pcall(function()
 									if data.precise then
-										callback(cheat.value)
-									else
 										callback(math.ceil(cheat.value))
+									else
+										callback(cheat.value)
 									end
 								end)
 
@@ -1239,9 +1187,9 @@ function finity.new(isdark, gprojectName, thinProject)
 								if callback then
                                     local s, e = pcall(function()
                                         if data.precise then
-                                            callback(cheat.value)
-                                        else
                                             callback(math.ceil(cheat.value))
+                                        else
+                                            callback(cheat.value)
                                         end
 									end)
 
@@ -1348,14 +1296,6 @@ function finity.new(isdark, gprojectName, thinProject)
 								if not s then warn("error: ".. e) end
 							end
                         end
-						function cheat:SetValue(val)
-							cheat.button.Text = val or val.Text
-						end
-						function cheat:Onclick(call)
-							cheat.button.MouseButton1Click:connect(function()
-								pcall(call)
-							end)
-						end
 
 						cheat.background.Parent = cheat.container
 						cheat.button.Parent = cheat.container
