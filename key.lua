@@ -1,1 +1,1 @@
-getgenv().key = 5515
+_G.key = 5515
